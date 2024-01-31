@@ -54,8 +54,8 @@ all.values <- all.values[order(all.values$s.index, all.values$Time),]
 
 # Swap year month to mount year
 year_mounth <- strsplit(all.values$Time, " ")
-mounth <- sapply(year_mounth, "[", 1)
-year <- sapply(year_mounth, "[", 2)
+year <- sapply(year_mounth, "[", 1)
+mounth <- sapply(year_mounth, "[", 2)
 all.values$Time <- paste(mounth, year, sep = " ")
 
 # Remove the column type and area
@@ -65,7 +65,6 @@ all.values$area <- NULL
 # Remove the columns X.x and X.y
 all.values$X.x <- NULL
 all.values$X.y <- NULL
-
 
 # Save the new dataset
 write.csv(all.values, "./SahuModels/Data/Sahu_models_dataset.csv", row.names = FALSE)
