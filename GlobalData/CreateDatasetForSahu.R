@@ -66,5 +66,8 @@ all.values$area <- NULL
 all.values$X.x <- NULL
 all.values$X.y <- NULL
 
+# Remove all rows that have the same s.index than raws that contain missing NOx values
+all.values <- all.values[!all.values$s.index %in% all.values[is.na(all.values$NOx),]$s.index,]
+
 # Save the new dataset
 write.csv(all.values, "./SahuModels/Data/Sahu_models_dataset.csv", row.names = FALSE)
