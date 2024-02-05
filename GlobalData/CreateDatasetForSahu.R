@@ -69,5 +69,11 @@ all.values$X.y <- NULL
 # Remove all rows that have the same s.index than raws that contain missing NOx values
 all.values <- all.values[!all.values$s.index %in% all.values[is.na(all.values$NOx),]$s.index,]
 
+# Only keep the raws whith a Time value that exist for all the s.index
+all.values <- all.values[all.values$Time %in% all.values[all.values$s.index == all.values$s.index[1],]$Time,]
+
+# print the nomber of raw for each station
+table(all.values$s.index)
+
 # Save the new dataset
 write.csv(all.values, "./SahuModels/Data/Sahu_models_dataset.csv", row.names = FALSE)
