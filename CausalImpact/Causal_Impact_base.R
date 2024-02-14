@@ -46,9 +46,9 @@ library(coda)
 
 ##### LOADING THE NEW DATASETS
 
-NOx_sensors <- read.csv("NOx_sensors.csv")
+NOx_sensors <- read.csv("./Data/NOx_sensors.csv")
 NOx_sensors <- NOx_sensors[,-1]
-All_values <- read.csv("All_values_Clean.csv")
+All_values <- read.csv("./Data/All_values_Clean.csv")
 All_values <- All_values[,-1]
 
 # For Futher codice on model selection part cfr  Causal_Impact_extra.R
@@ -321,7 +321,7 @@ plot(bsts4,"coef",burn = 500)
   #                       model.args = list(niter = MCMC_iter , standardize.data=F))
   # plot(impact$model$bsts.model, "comp")
   
-  x11()
+  #x11()
   #plot(impact)
   
   summary(impact)
@@ -707,6 +707,7 @@ plot(bsts4,"coef",burn = 500)
   effect_I   <- NULL
   effect_B   <- NULL
   effect_boh <- NULL
+  Covid <- 0
   
   sensor_id <-unique(All_values$Id_sensor) 
   for(hh in sensor_id ){
@@ -767,8 +768,8 @@ plot(bsts4,"coef",burn = 500)
       
       impact <- CausalImpact(bsts.model = bsts2e,
                              post.period.response = post.period.response)
-       x11()
-       plot(impact)
+       #x11()
+       #plot(impact)
       # MSE/MAE
       ########### pointwise error
       
@@ -785,6 +786,9 @@ plot(bsts4,"coef",burn = 500)
       for(i in 1:94){
         errCI <- rbind(errCI,c(quantile(error[,i],probs = c(0.025,0.975)),mean(error[,i])))
       }
+      
+      if(errCI[51, 2 ] <0 )
+        Covid=Covid+1
       
       SQ_err <- SQ_err+ sum((errCI[1:61,3])^2)
       ABs_ERR<- ABs_ERR+ sum(abs(errCI[1:61,3]))
@@ -825,11 +829,11 @@ plot(bsts4,"coef",burn = 500)
   Cum_Eff_red  #0.04551248
   
   # cum error
-  MSE  <- SQ_err/length(All_values$NOx) 
-  MSE  # 0.03424489 ->  ->  0.03552943
-  MAE<- ABs_ERR/length(All_values$NOx)
-  MAE # 0.1135288v ->  ->  0.1163127
-  
+  MSE  <- SQ_err/(61*54)
+  MSE  # 0.0762
+  MAE<- ABs_ERR/(61*54)
+  MAE # 0.2492
+  Covid
   # no effect : 14  / effect 40
   ###############################
   ###########  Range effect ########################################
